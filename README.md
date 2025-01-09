@@ -18,6 +18,7 @@ Made By SleepTheGod
 ```
 # Installation
 ```
+sudo apt install git -y && git clone https://github.com/SleepTheGod/SimpleC2/;
 mkdir remote-admin-tool
 cd remote-admin-tool
 npm init -y
