@@ -31,6 +31,8 @@ sudo apt update
 sudo apt install -y xvfb
 xvfb-run -a python3 ~/SimpleC2/server.py &
 xvfb-run -a python3 ~/SimpleC2/client_backend.py &
+export DISPLAY=:99
+xvfb-run -a python3 ~/SimpleC2/server.py &
 python3 ~/SimpleC2/server.py &
 python3 ~/SimpleC2/client_backend.py &
 ps aux | grep python3
