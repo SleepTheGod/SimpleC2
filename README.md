@@ -27,6 +27,14 @@ npm install color --save
 npm install chalk --save
 pip install flask cryptography pyautogui --break-system-packages
 python3 server.py && python3 client_backend.py && npm start server.js;
+sudo apt update
+sudo apt install -y xvfb
+xvfb-run -a python3 ~/SimpleC2/server.py &
+xvfb-run -a python3 ~/SimpleC2/client_backend.py &
+python3 ~/SimpleC2/server.py &
+python3 ~/SimpleC2/client_backend.py &
+ps aux | grep python3
+
 ```
 # Installation 2
 ```bash
