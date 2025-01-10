@@ -5,58 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remote Administration Tool</title>
     <style>
+        /* Global styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-        }
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
+            background-color: #000; /* Black background */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full screen height */
             text-align: center;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
-            font-size: 24px;
-            color: #333;
+            font-size: 36px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: #ff4d4d;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff4d4d, 0 0 30px #ff4d4d, 0 0 40px #ff0000;
+            animation: heartbeat 1.5s infinite alternate;
         }
+
+        /* Container styles */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            animation: glowPulse 2s ease-in-out infinite alternate;
+        }
+
+        /* Button styles */
         button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007BFF;
-            color: white;
+            margin: 15px;
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: #ff4d4d;
+            color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff4d4d;
+            outline: none;
         }
+
         button:hover {
-            background-color: #0056b3;
+            background-color: #e60000;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff4d4d;
         }
+
+        /* File upload styles */
         input[type="file"] {
             margin-top: 20px;
-        }
-        #output {
-            margin-top: 20px;
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+            background-color: transparent;
             padding: 10px;
-            background-color: #f1f1f1;
             border-radius: 5px;
-            color: #333;
+            width: 100%;
+            text-align: center;
+        }
+
+        input[type="file"]:hover {
+            background-color: #ff4d4d;
+            color: #fff;
+        }
+
+        #output {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #222;
+            border-radius: 8px;
+            color: #ccc;
             white-space: pre-wrap;
             word-wrap: break-word;
             min-height: 100px;
+            max-height: 400px;
+            overflow-y: auto;
+            text-shadow: 0 0 5px #ff0000;
         }
+
+        /* Loading and error messages */
         .loading {
             color: #28a745;
         }
+
         .error {
             color: #dc3545;
         }
+
+        /* Keyframe animations */
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes glowPulse {
+            0% {
+                box-shadow: 0 0 15px #ff4d4d, 0 0 30px #ff4d4d, 0 0 45px #ff4d4d;
+            }
+            100% {
+                box-shadow: 0 0 30px #ff0000, 0 0 60px #ff4d4d, 0 0 80px #ff4d4d;
+            }
+        }
+
     </style>
 </head>
 <body>
