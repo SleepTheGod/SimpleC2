@@ -7,16 +7,55 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
         }
         .container {
             max-width: 600px;
             margin: 50px auto;
             text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
         }
         button {
             margin: 10px;
             padding: 10px 20px;
             font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input[type="file"] {
+            margin-top: 20px;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            color: #333;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 100px;
+        }
+        .loading {
+            color: #28a745;
+        }
+        .error {
+            color: #dc3545;
         }
     </style>
 </head>
@@ -35,15 +74,25 @@
     </div>
 
     <script>
+        function displayOutput(message, isError = false) {
+            const outputElement = document.getElementById('output');
+            outputElement.innerText = message;
+            outputElement.classList.remove('loading');
+            outputElement.classList.add(isError ? 'error' : '');
+        }
+
         function getStatus() {
+            displayOutput("Loading...", true);
             fetch('/status')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('output').innerText = JSON.stringify(data);
-                });
+                    displayOutput(JSON.stringify(data, null, 2));
+                })
+                .catch(error => displayOutput(`Error: ${error}`, true));
         }
 
         function takeScreenshot() {
+            displayOutput("Taking screenshot...", true);
             fetch('/screenshot')
                 .then(response => response.blob())
                 .then(blob => {
@@ -52,35 +101,42 @@
                     img.src = url;
                     document.getElementById('output').innerHTML = '';
                     document.getElementById('output').appendChild(img);
-                });
+                })
+                .catch(error => displayOutput(`Error: ${error}`, true));
         }
 
         function listFiles() {
+            displayOutput("Loading files...", true);
             fetch('/files')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('output').innerText = JSON.stringify(data);
-                });
+                    displayOutput(JSON.stringify(data, null, 2));
+                })
+                .catch(error => displayOutput(`Error: ${error}`, true));
         }
 
         function getLogs() {
+            displayOutput("Loading logs...", true);
             fetch('/logs')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('output').innerText = JSON.stringify(data);
-                });
+                    displayOutput(JSON.stringify(data, null, 2));
+                })
+                .catch(error => displayOutput(`Error: ${error}`, true));
         }
 
         function uploadFile() {
             const formData = new FormData(document.getElementById('uploadForm'));
+            displayOutput("Uploading file...", true);
             fetch('/upload', {
                 method: 'POST',
                 body: formData
             })
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('output').innerText = JSON.stringify(data);
-                });
+                    displayOutput(JSON.stringify(data, null, 2));
+                })
+                .catch(error => displayOutput(`Error: ${error}`, true));
         }
     </script>
 </body>
