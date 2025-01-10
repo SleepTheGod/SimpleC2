@@ -1,4 +1,3 @@
-```py
 import socket
 
 # TCP client function
@@ -44,4 +43,3 @@ def udp_client():
 # Run the TCP and UDP clients
 tcp_client()
 udp_client()
-```
