@@ -80,3 +80,48 @@ debian     63551  0.0  0.0  12704  7328 pts/0    R    18:14   0:00 python3 /home
 debian     63552  100  0.0  12704  7332 pts/0    R    18:14   0:00 python3 /home/debian/SimpleC2/client_backend.py
 debian     63558  0.0  0.0   3876  1808 pts/0    S+   18:14   0:00 grep python3
 ```
+# NOTE
+if the following does not work do this
+```bash
+Installation
+
+Install Git and clone the repository
+sudo apt install git -y && git clone https://github.com/SleepTheGod/SimpleC2/
+
+Create and navigate to the project directory
+mkdir remote-admin-tool
+cd remote-admin-tool
+
+Initialize a Node.js project and install dependencies
+npm init -y
+npm install express multer fs pyautogui child_process color chalk
+
+Install Python dependencies
+pip install flask cryptography pyautogui --break-system-packages
+
+Set up Xvfb and run the necessary services
+sudo apt install -y xvfb
+xvfb-run -a python3 ~/SimpleC2/server.py &
+xvfb-run -a python3 ~/SimpleC2/client_backend.py &
+export DISPLAY=:99
+python3 ~/SimpleC2/server.py &
+python3 ~/SimpleC2/client_backend.py &
+
+Check Python processes
+ps aux | grep python3
+
+Change file permissions to make the key writable
+chmod +w server_key.key
+
+Usage
+
+After running the server and client, the tool will accept connections and display the following:
+Accepted TCP connection from ('127.0.0.1', 46222)
+Enter command (get <filename>, put <filename>, exit)
+
+Commands you can use:
+
+get <filename>
+put <filename>
+exit
+```
