@@ -4,14 +4,22 @@ const fs = require('fs');
 const chalk = require('chalk');
 const { exec } = require('child_process');
 const pyautogui = require('pyautogui');
+const path = require('path');
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000; // Allow port to be set by environment variables
 
-const upload = multer({ dest: 'uploads/' });
+// Setup automatic upload path creation
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
+const upload = multer({ dest: uploadDir });
+
+// Session log storage
 let sessionLogs = [];
 
-// Print banner in red text
+// Function to automatically create banner
 function printBanner() {
     const banner = `
 ███████╗██╗     ███████╗███████╗██████╗     ████████╗ ██████╗  ██████╗ ██╗     ███████╗    
@@ -32,10 +40,11 @@ function printBanner() {
 
 printBanner();
 
+// Automatically configure Express to handle JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Log session start
+// Log session start automatically
 app.use((req, res, next) => {
     const sessionStart = new Date().toISOString();
     sessionLogs.push({ ip: req.ip, startTime: sessionStart });
@@ -44,60 +53,63 @@ app.use((req, res, next) => {
 
 // Endpoint to get server status
 app.get('/status', (req, res) => {
-    res.json({ status: "Server is running" });
+    res.json({ status: "Server is running", port: port });
 });
 
 // Endpoint to take a screenshot
 app.get('/screenshot', (req, res) => {
-    const screenshotPath = 'screenshot.png';
+    const screenshotPath = path.join(__dirname, 'screenshot.png');
     pyautogui.screenshot().save(screenshotPath);
-    res.sendFile(screenshotPath, { root: __dirname });
+    res.sendFile(screenshotPath);
 });
 
-// Endpoint to list files
+// Endpoint to list files in the current directory
 app.get('/files', (req, res) => {
-    fs.readdir('.', (err, files) => {
+    fs.readdir(__dirname, (err, files) => {
         if (err) {
-            res.status(500).json({ error: err.message });
-        } else {
-            res.json(files);
+            return res.status(500).json({ error: err.message });
         }
+        res.json(files);
     });
 });
 
-// Endpoint to download a file
+// Endpoint to download a file from the server
 app.get('/download/:filename', (req, res) => {
     const filename = req.params.filename;
-    if (fs.existsSync(filename)) {
-        res.sendFile(filename, { root: __dirname });
+    const filePath = path.join(__dirname, filename);
+    if (fs.existsSync(filePath)) {
+        res.sendFile(filePath);
     } else {
         res.status(404).json({ error: "File not found" });
     }
 });
 
-// Endpoint to upload a file
+// Endpoint to upload files
 app.post('/upload', upload.single('file'), (req, res) => {
-    const tempPath = req.file.path;
-    const targetPath = `uploads/${req.file.originalname}`;
-
-    fs.rename(tempPath, targetPath, err => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ status: "File uploaded successfully" });
+    const targetPath = path.join(uploadDir, req.file.originalname);
+    fs.rename(req.file.path, targetPath, err => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json({ status: "File uploaded successfully", filename: req.file.originalname });
     });
 });
 
-// Endpoint to get session logs
+// Endpoint to view session logs
 app.get('/logs', (req, res) => {
     res.json(sessionLogs);
 });
 
-// Log session end
+// Log session end automatically
 app.use((req, res, next) => {
     const sessionEnd = new Date().toISOString();
-    sessionLogs[sessionLogs.length - 1].endTime = sessionEnd;
+    if (sessionLogs.length > 0) {
+        sessionLogs[sessionLogs.length - 1].endTime = sessionEnd;
+    }
     next();
 });
 
+// Automatically start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
